@@ -18,8 +18,9 @@ for iter = 1:num_iters
     %
 
     hyp = X * theta;
-    delta = (1/m) * (X' * (hyp-y));
-    theta = theta - alpha * delta;
+    
+
+end;
 
 
 
