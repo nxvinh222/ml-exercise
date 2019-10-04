@@ -74,11 +74,37 @@ h=sigmoid(z3)
 y_vec=(1:num_labels)==y %5000*10
 
 %tim cost function
-%J=(1/m) * sum(sum(-y_vec*log(h)'-(1-y_vec)*log(1-h)'))
-J = (1/m) * sum(sum((-y_vec.*log(h))-((1-y_vec).*log(1-h)))); 
+%J=(1/m) * sum(-y_vec*log(h)'-(1-y_vec)*log(1-h)')
+J = (1/m) * sum(sum((-y_vec.*log(h))-((1-y_vec).*log(1-h))));  % 5000x10 * 5000x10
 
 
+%Ap dung backpropagation
+for i=1:m
+    %forward propagation
+    %tach X ra thanh cac column
+    a1 = X(i,:)' %a1 = x(i) 1*401
+    z2 = Theta1 * a1 %25*1
+    a2 = sigmoid(z2)
+    a2 = [1; a2] %26*1
+    z3 = Theta2 * a2 %10*1
+    a3 = sigmoid(z3)
     
+    %tach y ra thanh cac cot ket qua
+    yVector = (1:num_labels) == y(i,:)
+    yVector = yVector' %10*1
+    
+    %Tinh Delta
+    Delta3 = a3 - yVector %10*1
+    Delta2 = (Theta2' * Delta3).*[1;sigmoidGradient(z2)] %26x1 * 26x1
+    Delta2 = Delta2(2:end) %Xoa bias node 25*1
+    %Khong tinh Delta1 vi khong can so sanh voi input
+    
+    %Tinh Grad
+    Theta1_grad = Theta1_grad + (Delta2*a1')
+    Theta2_grad = Theta2_grad + (Delta3*a2')
+end   
+Theta1_grad = (1/m) * Theta1_grad
+Theta2_grad = (1/m) * Theta2_grad
 
 
 
